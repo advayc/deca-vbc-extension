@@ -83,16 +83,16 @@ function numberToWords(num) {
 }
 
 function calculateProfits() {
-    const teamProfit = parseFloat(profitInput.value);
-    const teamPercentage = parseFloat(percentageInput.value);
+    const givenProfit = parseFloat(profitInput.value);
+    const givenPercentage = parseFloat(percentageInput.value);
     const teamRank = parseInt(rankInput.value);
 
-    if (isNaN(teamProfit) || isNaN(teamPercentage) || isNaN(teamRank)) {
+    if (isNaN(givenProfit) || isNaN(givenPercentage) || isNaN(teamRank)) {
         alert("Please enter valid values for all fields.");
         return;
     }
 
-    alert(`Calculations based on:\nProfit: ${formatMoney(teamProfit)}\nPercentage: ${teamPercentage}%\nRank: ${teamRank}`);
+    alert(`Calculations based on:\nProfit: ${formatMoney(givenProfit)}\nPercentage: ${givenPercentage}%\nRank: ${teamRank}`);
 
     const firstBar = bars[0];
     const referenceWidth = firstBar.children[0].style.width;
@@ -113,17 +113,13 @@ function calculateProfits() {
         infoContainer.className = "percentage-profit";
         infoContainer.style.position = "absolute";
         infoContainer.style.top = 0;
-        infoContainer.style.right = "-16rem";
+        infoContainer.style.right = "-14rem";
         infoContainer.style.whiteSpace = "nowrap";
         infoContainer.style.transition = "opacity 0.3s ease";
         infoContainer.style.fontFamily = "Arial, sans-serif";
 
-        const percentElement = document.createElement("span");
-        percentElement.innerText = `${barPercent.toFixed(2)}%`;
-        percentElement.style.color = "#444";
-        infoContainer.appendChild(percentElement);
-
-        const profit = (teamProfit * barPercent) / teamPercentage;
+        const profit = givenProfit * ((barPercent + givenPercentage)/100);
+		console.log(givenProfit, barPercent+ givenPercentage)
         const profitElement = document.createElement("span");
         profitElement.innerText = ` | ${formatMoney(profit)}`;
         profitElement.style.marginLeft = "10px";
