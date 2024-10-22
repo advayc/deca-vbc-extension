@@ -53,6 +53,8 @@ if (referenceElement) {
 
 submitButton.addEventListener("click", calculateProfits);
 
+loadSavedValues();
+
 function createInput(type, placeholder, width) {
     const input = document.createElement("input");
     input.type = type;
@@ -83,13 +85,23 @@ function numberToWords(num) {
 }
 
 function calculateProfits() {
-    const givenProfit = parseFloat(profitInput.value);
-    const givenPercentage = parseFloat(percentageInput.value);
-    const teamRank = parseInt(rankInput.value);
+    let givenProfit = parseFloat(profitInput.value);
+    let givenPercentage = parseFloat(percentageInput.value);
+    let teamRank = parseInt(rankInput.value);
 
     if (isNaN(givenProfit) || isNaN(givenPercentage) || isNaN(teamRank)) {
-        alert("Please enter valid values for all fields.");
-        return;
+        const savedValues = getSavedValues();
+        if (savedValues) {
+            givenProfit = savedValues.profit;
+            givenPercentage = savedValues.percentage;
+            teamRank = savedValues.rank;
+            profitInput.value = givenProfit;
+            percentageInput.value = givenPercentage;
+            rankInput.value = teamRank;
+        } else {
+            alert("Please enter valid values for all fields.");
+            return;
+        }
     }
 
     // Validate input values
@@ -97,6 +109,9 @@ function calculateProfits() {
         alert("Please enter valid values for profit, percentage, and rank.");
         return;
     }
+
+    // save values to localStorage
+    saveValues(givenProfit, givenPercentage, teamRank);
 
     alert(`Calculations based on:\nProfit: ${formatMoney(givenProfit)}\nPercentage: ${givenPercentage}%\nRank: ${teamRank}`);
 
@@ -148,7 +163,6 @@ function calculateProfits() {
         });
     });
 }
-displayPercentages();
 
 function displayPercentages() {
     const firstBar = bars[0];
@@ -181,3 +195,27 @@ function displayPercentages() {
         });
     });
 }
+
+function saveValues(profit, percentage, rank) {
+    localStorage.setItem('calculatorValues', JSON.stringify({ profit, percentage, rank }));
+}
+
+function getSavedValues() {
+    const savedValues = localStorage.getItem('calculatorValues');
+    if (savedValues) {
+        return JSON.parse(savedValues);
+    } else {
+        return null;
+    }
+}
+
+function loadSavedValues() {
+    const savedValues = getSavedValues();
+    if (savedValues) {
+        profitInput.value = savedValues.profit;
+        percentageInput.value = savedValues.percentage;
+        rankInput.value = savedValues.rank;
+    }
+}
+
+displayPercentages();
