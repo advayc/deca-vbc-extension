@@ -1,22 +1,22 @@
 const bars = document.querySelectorAll("td[align=left]");
 
 const inputContainer = document.createElement("div");
-inputContainer.style.position = "fixed";
-inputContainer.style.top = "10px";
-inputContainer.style.right = "10px";
+inputContainer.style.position = "absolute";
 inputContainer.style.zIndex = "1000";
 inputContainer.style.background = "white";
 inputContainer.style.padding = "10px";
 inputContainer.style.borderRadius = "5px";
 inputContainer.style.boxShadow = "0 2px 5px rgba(0,0,0,0.2)";
 inputContainer.style.transition = "all 0.3s ease";
+inputContainer.style.display = "flex";
+inputContainer.style.alignItems = "center";
 
-const profitInput = createInput("number", "Enter your team's profit");
-const percentageInput = createInput("number", "Enter your team's percentage");
-const rankInput = createInput("number", "Enter your team's rank");
+const profitInput = createInput("number", "Total Profit", "150px");
+const percentageInput = createInput("number", "%", "50px");
+const rankInput = createInput("number", "Rank", "70px");
 
 const submitButton = document.createElement("button");
-submitButton.textContent = "Calculate Profits";
+submitButton.textContent = "Calculate";
 submitButton.style.backgroundColor = "darkblue";
 submitButton.style.color = "white";
 submitButton.style.border = "none";
@@ -24,6 +24,7 @@ submitButton.style.padding = "5px 10px";
 submitButton.style.cursor = "pointer";
 submitButton.style.borderRadius = "3px";
 submitButton.style.transition = "background-color 0.3s ease";
+submitButton.style.marginLeft = "5px";
 
 submitButton.addEventListener("mouseover", () => {
     submitButton.style.backgroundColor = "#000080";
@@ -33,20 +34,46 @@ submitButton.addEventListener("mouseout", () => {
 });
 
 [profitInput, percentageInput, rankInput, submitButton].forEach(el => inputContainer.appendChild(el));
-document.body.appendChild(inputContainer);
+
+const regionElement = document.querySelector('font[size="4"][color="#0000FF"]');
+
+if (regionElement) {
+    regionElement.parentNode.insertBefore(inputContainer, regionElement.nextSibling);
+    inputContainer.style.marginTop = "10px";
+    inputContainer.style.marginLeft = regionElement.offsetLeft + "px";
+} else {
+    document.body.appendChild(inputContainer);
+}
 
 submitButton.addEventListener("click", calculateProfits);
 
-function createInput(type, placeholder) {
+function createInput(type, placeholder, width) {
     const input = document.createElement("input");
     input.type = type;
     input.placeholder = placeholder;
-    input.style.marginBottom = "5px";
-    input.style.width = "100%";
+    input.style.width = width;
     input.style.padding = "5px";
     input.style.borderRadius = "3px";
     input.style.border = "1px solid #ccc";
+    input.style.marginRight = "5px";
     return input;
+}
+
+function formatMoney(amount) {
+    return amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+}
+
+function numberToWords(num) {
+    const ones = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+    const tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+    const teens = ['ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+
+    if (num < 10) return ones[num];
+    if (num < 20) return teens[num - 10];
+    if (num < 100) return tens[Math.floor(num / 10)] + (num % 10 ? '-' + ones[num % 10] : '');
+    if (num < 1000) return ones[Math.floor(num / 100)] + ' hundred' + (num % 100 ? ' and ' + numberToWords(num % 100) : '');
+    if (num < 1000000) return numberToWords(Math.floor(num / 1000)) + ' thousand' + (num % 1000 ? ' ' + numberToWords(num % 1000) : '');
+    return numberToWords(Math.floor(num / 1000000)) + ' million' + (num % 1000000 ? ' ' + numberToWords(num % 1000000) : '');
 }
 
 function calculateProfits() {
@@ -59,7 +86,7 @@ function calculateProfits() {
         return;
     }
 
-    alert(`Calculations based on:\nProfit: $${teamProfit.toFixed(2)}\nPercentage: ${teamPercentage}%\nRank: ${teamRank}`);
+    alert(`Calculations based on:\nProfit: ${formatMoney(teamProfit)}\nPercentage: ${teamPercentage}%\nRank: ${teamRank}`);
 
     const firstBar = bars[0];
     const referenceWidth = firstBar.children[0].style.width;
@@ -68,7 +95,7 @@ function calculateProfits() {
     bars.forEach((bar, index) => {
         const barElement = bar.children[0];
         bar.style.position = "relative";
-        
+
         const width = barElement.style.width;
         const widthNum = +width.substring(0, width.length - 2);
         const barPercent = (widthNum / referenceWidthNum) * 100;
@@ -83,17 +110,25 @@ function calculateProfits() {
         infoContainer.style.right = "-16rem";
         infoContainer.style.whiteSpace = "nowrap";
         infoContainer.style.transition = "opacity 0.3s ease";
+        infoContainer.style.fontFamily = "Arial, sans-serif";
 
         const percentElement = document.createElement("span");
         percentElement.innerText = `${barPercent.toFixed(2)}%`;
+        percentElement.style.color = "#444";
         infoContainer.appendChild(percentElement);
 
         const profit = (teamProfit * barPercent) / teamPercentage;
         const profitElement = document.createElement("span");
-        profitElement.innerText = ` | $${profit.toFixed(2)}`;
+        profitElement.innerText = ` | ${formatMoney(profit)}`;
         profitElement.style.marginLeft = "10px";
         profitElement.style.fontWeight = "bold";
+        profitElement.style.color = "#0066cc";
+        profitElement.style.cursor = "pointer";
         infoContainer.appendChild(profitElement);
+
+        profitElement.addEventListener("click", () => {
+            alert(`Profit: ${formatMoney(profit)}\n${numberToWords(Math.round(profit))} dollars`);
+        });
 
         bar.appendChild(infoContainer);
 
@@ -125,6 +160,8 @@ function displayPercentages() {
         percentElement.style.top = 0;
         percentElement.style.right = "-5rem";
         percentElement.style.transition = "opacity 0.3s ease";
+        percentElement.style.fontFamily = "Arial, sans-serif";
+        percentElement.style.color = "#444";
 
         bar.style.position = "relative";
         bar.appendChild(percentElement);
