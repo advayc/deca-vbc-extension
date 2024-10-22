@@ -92,6 +92,12 @@ function calculateProfits() {
         return;
     }
 
+    // Validate input values
+    if (givenProfit <= 0 || givenPercentage <= 0 || givenPercentage > 100 || teamRank <= 0) {
+        alert("Please enter valid values for profit, percentage, and rank.");
+        return;
+    }
+
     alert(`Calculations based on:\nProfit: ${formatMoney(givenProfit)}\nPercentage: ${givenPercentage}%\nRank: ${teamRank}`);
 
     const firstBar = bars[0];
@@ -118,8 +124,8 @@ function calculateProfits() {
         infoContainer.style.transition = "opacity 0.3s ease";
         infoContainer.style.fontFamily = "Arial, sans-serif";
 
-        const profit = givenProfit * ((barPercent + givenPercentage)/100);
-		console.log(givenProfit, barPercent+ givenPercentage)
+        const profit = (givenProfit * barPercent) / givenPercentage;
+        
         const profitElement = document.createElement("span");
         profitElement.innerText = ` | ${formatMoney(profit)}`;
         profitElement.style.marginLeft = "10px";
@@ -142,7 +148,6 @@ function calculateProfits() {
         });
     });
 }
-
 displayPercentages();
 
 function displayPercentages() {
