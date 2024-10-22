@@ -10,37 +10,43 @@ inputContainer.style.boxShadow = "0 2px 5px rgba(0,0,0,0.2)";
 inputContainer.style.transition = "all 0.3s ease";
 inputContainer.style.display = "flex";
 inputContainer.style.alignItems = "center";
+inputContainer.style.gap = "10px";
 
-const profitInput = createInput("number", "Total Profit", "150px");
-const percentageInput = createInput("number", "%", "50px");
-const rankInput = createInput("number", "Rank", "70px");
+const profitInput = createInput("number", "Total Profit", "120px");
+const percentageInput = createInput("number", "%", "56px");
+const rankInput = createInput("number", "Rank", "60px");
 
 const submitButton = document.createElement("button");
 submitButton.textContent = "Calculate";
-submitButton.style.backgroundColor = "darkblue";
+submitButton.style.backgroundColor = "rgb(30, 120, 152)";
 submitButton.style.color = "white";
 submitButton.style.border = "none";
 submitButton.style.padding = "5px 10px";
 submitButton.style.cursor = "pointer";
 submitButton.style.borderRadius = "3px";
-submitButton.style.transition = "background-color 0.3s ease";
-submitButton.style.marginLeft = "5px";
+submitButton.style.transition = "background-color 0.3s ease, transform 0.3s";
+submitButton.style.transform = "scale(1)";
 
 submitButton.addEventListener("mouseover", () => {
-    submitButton.style.backgroundColor = "#000080";
+    submitButton.style.backgroundColor = "rgb(30, 120, 152)";
+    submitButton.style.transform = "scale(1.05)";
 });
 submitButton.addEventListener("mouseout", () => {
-    submitButton.style.backgroundColor = "darkblue";
+    submitButton.style.backgroundColor = "rgb(30, 120, 152)";
+    submitButton.style.transform = "scale(1)";
 });
 
 [profitInput, percentageInput, rankInput, submitButton].forEach(el => inputContainer.appendChild(el));
 
-const regionElement = document.querySelector('font[size="4"][color="#0000FF"]');
+const referenceElement = document.querySelector('table');
 
-if (regionElement) {
-    regionElement.parentNode.insertBefore(inputContainer, regionElement.nextSibling);
-    inputContainer.style.marginTop = "10px";
-    inputContainer.style.marginLeft = regionElement.offsetLeft + "px";
+if (referenceElement) {
+    referenceElement.parentNode.insertBefore(inputContainer, referenceElement);
+    
+    inputContainer.style.position = "relative";
+    inputContainer.style.marginTop = "-10px";
+    inputContainer.style.marginBottom = "20px";
+    inputContainer.style.marginLeft = "0px";
 } else {
     document.body.appendChild(inputContainer);
 }
@@ -55,7 +61,7 @@ function createInput(type, placeholder, width) {
     input.style.padding = "5px";
     input.style.borderRadius = "3px";
     input.style.border = "1px solid #ccc";
-    input.style.marginRight = "5px";
+    input.style.marginRight = "0";
     return input;
 }
 
