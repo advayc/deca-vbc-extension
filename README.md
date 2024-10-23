@@ -21,10 +21,6 @@ This project is a fork of the original! [DECA VBC Extension](https://github.com/
 3. Enable "Developer mode."
 4. Click "Load unpacked" and select the downloaded folder.
 
-### Firefox
-
-[Firefox Add-on](https://addons.mozilla.org/en-CA/firefox/addon/deca-vbc-standings-percentage/)
-
 ## Demo
 
 <details>
